@@ -1,0 +1,527 @@
+# Field guide visual system
+
+Use this visual system for every HTML page you produce. It defines how a page looks, not what it says: structure the content however the content needs, then build the page only from the tokens and components below.
+
+## Principles
+
+1. One small system, used strictly. One palette, three typefaces with fixed jobs, a handful of radius and spacing values. Never invent new ones.
+2. Match the component to the shape of the content. A sequence gets steps, proportions get a bar, records with a status get a table with pills. Do not default to bullet lists, and do not add a component only for variety.
+3. Colour carries meaning. Tones have fixed roles, status colours have fixed meanings, and a recurring subject keeps one hue across the whole page.
+4. Flat and bright. Soft fills and thin outlines instead of shadows. No icons, images, emoji or decorative gradients.
+
+## Colour
+
+Neutrals:
+- `--bg` #FFFFFF: page background, option cards inside tinted panels
+- `--paper` #F6F7FF: tinted card and panel background
+- `--ink` #1B1640: text
+- `--muted` #5B5880: secondary text, labels
+- `--line` #E3E3F3: outlines, dividers, empty meter cells
+
+Hues, as bright / soft / ink:
+- coral: #FF5E5B / #FFE3E2 / #C2302D
+- sun: #FFC93C / #FFF4CF / #9A6B00
+- lime: #4CB944 / #E3F6E1 / #2E7D28
+- teal: #00A6A6 / #D9F5F3 / #00706F
+- sky: #2F8CFF / #E0EEFF / #1A5FBF
+- violet: #6C4CF5 / #ECE7FF / #5534E0
+
+Tone roles:
+- Bright: fills, bars, dots, left borders, meter cells, and number tiles with white text.
+- Soft: backgrounds of callouts, tiles and tinted cards.
+- Ink: any coloured text, such as labels, pills and callout titles. Never set small text in a bright tone, because it is too faint to read.
+
+Applying a hue: add `hue-coral`, `hue-sky` and so on to a component. The class sets `--c` (bright), `--cs` (soft) and `--ci` (ink), which the components read. Without a class, components fall back to coral.
+
+Fixed meanings:
+- Status pills: `good` is lime (active, done, yes), `wait` is sun (waiting, open, partial), `bad` is coral (stalled, blocked), `off` is grey (paused, not applicable).
+- Callouts: sun for reasoning or an open question, teal for a stance or takeaway, violet for context or background.
+- Coral is the default accent: the drop cap, numbered rows, meters and the highlighted chip.
+- The hero stripe always shows all six hues in the order coral, sun, lime, teal, sky, violet.
+
+Recurring subjects: when the same projects, people or tracks appear in several places, give each one hue from coral, sky, lime, teal and violet, and keep it everywhere. Never give a subject sun, because white text cannot sit on it.
+
+## Typography
+
+- Display, Bricolage Grotesque, weight 800: h1, h2, card titles, stat values, number tiles, the drop cap. Line height 1.15 with `text-wrap: balance`. The h1 is clamp(2.3rem, 7vw, 4rem) with -0.02em tracking, and the h2 is clamp(1.6rem, 4.4vw, 2.3rem).
+- Body, Figtree: 16px with line height 1.6. Card text runs 0.9 to 0.97rem. The lede is 1.15rem in muted. Prose lines stop at 64 to 68ch.
+- Mono, DM Mono, weight 500: eyebrows (12px, 0.08em tracking, uppercase), labels and table headers (11px, 0.06em tracking, uppercase), and tags, pills and step numbers (11 to 13px).
+
+## Shape and space
+
+- Radii: 999px for pills, tags and chips; 12 to 14px for small tiles, option cards and the bar; 16px for cards; 18px for callouts and tickets; 20px for banners and big tiles; 24px for the prose panel.
+- Spacing: 56px between sections, 22px inside a section, 10 to 14px between cards, and 14 to 22px of card padding.
+- Surfaces come in three kinds. A soft fill is information or context. A 1.5px `--line` outline on white is an item in a set. A 2px dashed border is something paused, optional or on the horizon.
+- The page is a single column, 980px wide at most, with a gutter of at least 16px.
+
+## Text fit
+
+Components are sized for short text: titles of 1 to 5 words, stat values that read as a short verdict, card bodies of one or two sentences, and lists of 2 to 5 items. Longer text belongs in a callout or the prose panel.
+
+## Technical rules
+
+- Output one self-contained `.html` file. Paste the stylesheet below verbatim into the page shell's `<style>` tag. Add CSS only when no component fits, and build it from the existing tokens, radii and spacing.
+- Load fonts only through the Google Fonts link in the page shell. No JavaScript, images, icons or emoji. No shadows, and no gradients beyond the hero stripe and highlight.
+- Light only (`color-scheme: light`).
+- Accessibility: every `section` has `aria-labelledby` pointing to its h2's id. The stripe is `aria-hidden`. A proportion bar has `role="img"` and an `aria-label` stating the numbers. A meter has an `aria-label` such as "Difficulty 4 of 5". External links get `target="_blank" rel="noopener"`.
+- The page must work at 390px wide. The stylesheet collapses every grid to one column below 760px, so never add fixed widths.
+
+## Stylesheet
+
+```css
+:root {
+  --bg: #FFFFFF;
+  --paper: #F6F7FF;
+  --ink: #1B1640;
+  --muted: #5B5880;
+  --line: #E3E3F3;
+  --coral: #FF5E5B;  --coral-soft: #FFE3E2;  --coral-ink: #C2302D;
+  --sun: #FFC93C;    --sun-soft: #FFF4CF;    --sun-ink: #9A6B00;
+  --lime: #4CB944;   --lime-soft: #E3F6E1;   --lime-ink: #2E7D28;
+  --teal: #00A6A6;   --teal-soft: #D9F5F3;   --teal-ink: #00706F;
+  --sky: #2F8CFF;    --sky-soft: #E0EEFF;    --sky-ink: #1A5FBF;
+  --violet: #6C4CF5; --violet-soft: #ECE7FF; --violet-ink: #5534E0;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --c: var(--coral); --cs: var(--coral-soft); --ci: var(--coral-ink);
+  --hl: var(--sun);
+  color-scheme: light;
+}
+.hue-coral  { --c: var(--coral);  --cs: var(--coral-soft);  --ci: var(--coral-ink); }
+.hue-sun    { --c: var(--sun);    --cs: var(--sun-soft);    --ci: var(--sun-ink); }
+.hue-lime   { --c: var(--lime);   --cs: var(--lime-soft);   --ci: var(--lime-ink); }
+.hue-teal   { --c: var(--teal);   --cs: var(--teal-soft);   --ci: var(--teal-ink); }
+.hue-sky    { --c: var(--sky);    --cs: var(--sky-soft);    --ci: var(--sky-ink); }
+.hue-violet { --c: var(--violet); --cs: var(--violet-soft); --ci: var(--violet-ink); }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+a { color: var(--sky-ink); }
+a:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap {
+  max-width: 980px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+  display: grid; gap: 56px;
+}
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+p { margin: 0; }
+ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* Hero */
+.hero { display: grid; gap: 18px; }
+.hero h1 { font-size: clamp(2.3rem, 7vw, 4rem); font-weight: 800; letter-spacing: -0.02em; }
+.hero h1 .hl { background: linear-gradient(transparent 58%, var(--hl) 58%); padding: 0 4px; }
+.hero .lede { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.stripe { display: flex; height: 10px; border-radius: 999px; overflow: hidden; max-width: 360px; }
+.stripe span { flex: 1; }
+.stripe span:nth-child(1) { background: var(--coral); }
+.stripe span:nth-child(2) { background: var(--sun); }
+.stripe span:nth-child(3) { background: var(--lime); }
+.stripe span:nth-child(4) { background: var(--teal); }
+.stripe span:nth-child(5) { background: var(--sky); }
+.stripe span:nth-child(6) { background: var(--violet); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Sections */
+.sec { display: grid; gap: 22px; }
+.sec-head { display: grid; gap: 6px; }
+.sec-head h2 { font-size: clamp(1.6rem, 4.4vw, 2.3rem); font-weight: 800; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+.sub { font-size: 1.2rem; font-weight: 800; }
+
+/* Tags, pills, chips */
+.tag { font-family: var(--mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+.pill { justify-self: start; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--bg); color: var(--ci); border: 1.5px solid var(--c); }
+.st { display: inline-block; justify-self: start; font-family: var(--mono); font-size: 11px; padding: 3px 10px; border-radius: 999px; }
+.st.good { background: var(--lime-soft); color: var(--lime-ink); }
+.st.wait { background: var(--sun-soft); color: var(--sun-ink); }
+.st.bad { background: var(--coral-soft); color: var(--coral-ink); }
+.st.off { background: var(--paper); color: var(--muted); border: 1px solid var(--line); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-weight: 600; font-size: 0.9rem; padding: 4px 12px; border-radius: 999px; background: var(--violet-soft); color: var(--violet-ink); }
+.chip.on { background: var(--coral); color: #FFFFFF; }
+
+/* On/off pair */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.side { border-radius: 20px; padding: 20px 22px; display: grid; gap: 6px; align-content: start; }
+.side.on { background: var(--lime-soft); }
+.side.off { background: var(--paper); border: 2px dashed var(--line); }
+.side .state { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+.side.on .state { color: var(--lime-ink); }
+.side.off .state { color: var(--muted); }
+.side h3 { font-size: 1.5rem; font-weight: 800; }
+.side p { font-size: 0.97rem; }
+
+/* Stat cards and outlined cards */
+.facts, .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.fact { background: var(--paper); border-radius: 16px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.card { border: 1.5px solid var(--line); border-radius: 16px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.fact .k, .card .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.fact .k { color: var(--muted); }
+.card .k { color: var(--ci); }
+.fact .v { font-family: var(--display); font-weight: 800; font-size: 1.35rem; line-height: 1.2; }
+.fact p { font-size: 0.92rem; color: var(--muted); }
+.card b { font-family: var(--display); font-size: 1.1rem; }
+.card p { font-size: 0.93rem; }
+
+/* Callout */
+.callout { background: var(--cs); border-radius: 18px; padding: 18px 22px; display: grid; gap: 6px; }
+.callout h3 { font-size: 1.15rem; color: var(--ci); }
+
+/* Steps */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.step { background: var(--sky-soft); border-radius: 16px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+.step .n { font-family: var(--mono); font-size: 12px; color: var(--sky-ink); }
+.step b { font-family: var(--display); font-size: 1.05rem; }
+.step p { font-size: 0.9rem; }
+
+/* Proportion bar */
+.proportion { display: grid; gap: 10px; }
+.bar { display: flex; height: 46px; border-radius: 14px; overflow: hidden; font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.bar div { flex: 1; display: flex; align-items: center; padding: 0 12px; background: var(--c); color: #FFFFFF; white-space: nowrap; overflow: hidden; }
+.bar div.sm { justify-content: center; padding: 0 4px; }
+.legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.leg { display: grid; gap: 2px; font-size: 0.93rem; align-content: start; }
+.leg b { display: flex; align-items: center; gap: 8px; font-family: var(--display); }
+.sw { width: 12px; height: 12px; border-radius: 4px; background: var(--c); flex: none; }
+
+/* Table */
+.tablewrap { overflow-x: auto; border-radius: 16px; border: 1.5px solid var(--line); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.93rem; }
+th, td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--paper); }
+tr:last-child td { border-bottom: none; }
+td b { font-family: var(--display); }
+td .st { white-space: nowrap; }
+
+/* Numbered rows */
+.numrows { display: grid; gap: 10px; }
+.numrow { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; align-items: start; background: var(--paper); border-radius: 16px; padding: 14px 16px; }
+.numrow .num { width: 40px; height: 40px; border-radius: 12px; background: var(--c); color: #FFFFFF; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 1.1rem; }
+.numrow b { font-family: var(--display); font-size: 1.05rem; }
+.numrow p { font-size: 0.93rem; color: var(--muted); }
+
+/* Lanes */
+.lanes { display: grid; gap: 10px; }
+.lane-head, .lane { display: grid; grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.lane-head { padding: 0 16px; }
+.lane { background: var(--paper); border-radius: 16px; padding: 16px; border-left: 6px solid var(--c); }
+.lane-name { font-family: var(--display); font-weight: 800; font-size: 1.12rem; }
+.lane-name small { display: block; font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ci); }
+.lane p { font-size: 0.96rem; }
+.cell-label { display: none; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+
+/* Options panel */
+.options { display: grid; gap: 14px; background: var(--sun-soft); border-radius: 20px; padding: 22px; }
+.options h3 { font-size: 1.35rem; font-weight: 800; }
+.options-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.opt { background: var(--bg); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; }
+.opt b { font-family: var(--display); font-size: 1.05rem; }
+.opt span { color: var(--muted); font-size: 0.92rem; }
+.note { font-size: 0.95rem; }
+
+/* Dashed panel */
+.dashed { display: grid; gap: 10px; border: 2px dashed var(--violet); border-radius: 20px; padding: 20px 22px; }
+.dashed h3 { font-size: 1.2rem; color: var(--violet-ink); }
+
+/* Tickets */
+.tickets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.tickets .callout { grid-column: 1 / -1; }
+.ticket { background: var(--bg); border: 1.5px solid var(--line); border-radius: 18px; padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.ticket h3 { font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); flex: none; }
+.ticket ul { gap: 6px; font-size: 0.95rem; }
+.ticket li::marker { color: var(--c); }
+
+/* Numbered tiles */
+.tiles { display: grid; gap: 14px; }
+.tile { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 18px; background: var(--cs); border-radius: 20px; padding: 20px; }
+.tile .num { width: 64px; height: 64px; border-radius: 18px; background: var(--c); color: #FFFFFF; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 1.7rem; }
+.tile-body { display: grid; gap: 8px; min-width: 0; }
+.tile h3 { font-size: 1.3rem; font-weight: 800; }
+.tile .lead { font-weight: 600; }
+.tile ul { gap: 4px; font-size: 0.95rem; }
+
+/* Mini cards */
+.minis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.mini { background: var(--paper); border-radius: 14px; padding: 14px 16px; display: grid; gap: 2px; align-content: start; }
+.mini b { font-family: var(--display); }
+.mini span { font-size: 0.92rem; color: var(--muted); }
+
+/* Detail cards */
+.details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.detail { border-radius: 18px; padding: 18px 20px; display: grid; gap: 10px; align-content: start; background: var(--bg); border: 1.5px solid var(--line); }
+.detail-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.detail h4 { font-size: 1.15rem; font-weight: 800; }
+.detail p { font-size: 0.94rem; }
+.detail .more { font-size: 0.92rem; color: var(--muted); }
+.detail .more b { color: var(--ink); }
+.meter { display: flex; gap: 3px; align-items: center; }
+.meter i { width: 14px; height: 8px; border-radius: 3px; background: var(--line); display: block; }
+.meter i.f { background: var(--coral); }
+.meter span { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 6px; }
+
+/* Trio */
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.trio > div { background: var(--violet-soft); border-radius: 16px; padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.trio b { font-family: var(--display); color: var(--violet-ink); font-size: 1.05rem; }
+.trio p { font-size: 0.93rem; }
+
+/* Prose panel */
+.summary { background: var(--paper); border-radius: 24px; padding: 28px; display: grid; gap: 16px; }
+.summary p { max-width: 68ch; font-size: 1.02rem; }
+.summary p:first-of-type::first-letter { font-family: var(--display); font-weight: 800; font-size: 3.2em; float: left; line-height: 0.9; margin: 4px 10px 0 0; color: var(--coral); }
+.foot { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .split, .facts, .cards, .cards.two, .legend, .options-grid, .tickets, .minis, .details, .trio { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bar div { font-size: 12px; }
+  .lane-head { display: none; }
+  .lane { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .cell-label { display: block; }
+  .tile { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .tile .num { width: 48px; height: 48px; border-radius: 14px; font-size: 1.3rem; }
+  .summary { padding: 22px 18px; }
+}
+@media (max-width: 420px) {
+  .steps { grid-template-columns: minmax(0, 1fr); }
+}
+```
+
+## Page shell
+
+Every page starts from this shell. Text in square brackets is a placeholder.
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>[Page title]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap">
+<style>
+/* the stylesheet, verbatim */
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <p class="eyebrow">[Short context · Place · Date]</p>
+    <h1>[Title with a <span class="hl">highlighted phrase</span>]</h1>
+    <p class="lede">[One or two sentences.]</p>
+    <div class="meta"><span class="tag">[Date or fact]</span><span class="tag">[Date or fact]</span></div>
+  </header>
+
+  <section class="sec" aria-labelledby="s1">
+    <div class="sec-head">
+      <p class="eyebrow">[Short label]</p>
+      <h2 id="s1">[Section title]</h2>
+      <p>[Optional one-sentence intro.]</p>
+    </div>
+    <!-- components -->
+  </section>
+
+</main>
+</body>
+</html>
+```
+
+Inside a section, `<h3 class="sub">` separates groups of components. To tint the hero highlight, set `style="--hl:var(--coral-soft)"` (or any soft tone) on the h1.
+
+## Components
+
+Each snippet shows one item. Repeat the item as needed.
+
+### On/off pair (`.split`)
+Use for: two states side by side, one active and one paused or rejected.
+```html
+<div class="split">
+  <div class="side on"><span class="state">● Active</span><h3>[Title]</h3><p>[One or two sentences.]</p></div>
+  <div class="side off"><span class="state">○ Paused</span><h3>[Title]</h3><p>[One or two sentences.]</p></div>
+</div>
+```
+
+### Stat cards (`.facts`)
+Use for: 3 to 6 key facts read at a glance, each a label, a short value and a line of context.
+```html
+<div class="facts">
+  <div class="fact"><span class="k">[Label]</span><span class="v">[Short value]</span><p>[One sentence of context.]</p></div>
+</div>
+```
+
+### Outlined cards (`.cards`, or `.cards.two` for two columns)
+Use for: a set of peers, such as people with roles or named terms, each with a coloured label.
+```html
+<div class="cards">
+  <div class="card hue-sky"><span class="k">[Label]</span><b>[Title]</b><p>[One or two sentences.]</p></div>
+</div>
+```
+
+### Callout (`.callout.hue-*`)
+Use for: one point to stress, or a short list that really is a list. The hue follows the callout meanings above.
+```html
+<div class="callout hue-sun">
+  <h3>[Title]</h3>
+  <p>[A few sentences, or a ul of 2 to 5 items.]</p>
+</div>
+```
+
+### Steps (`.steps`)
+Use for: a process in order, with 3 or 4 steps.
+```html
+<div class="steps">
+  <div class="step"><span class="n">Step 1</span><b>[Title]</b><p>[One sentence.]</p></div>
+</div>
+```
+
+### Proportion bar (`.proportion`)
+Use for: the parts of a whole. Each segment's flex value is its share. Add `sm` to a narrow segment.
+```html
+<div class="proportion">
+  <div class="bar" role="img" aria-label="[70 percent A, 20 percent B, 10 percent C]">
+    <div class="hue-lime" style="flex:70">[70% A]</div><div class="hue-sky" style="flex:20">[20% B]</div><div class="hue-coral sm" style="flex:10">[10%]</div>
+  </div>
+  <div class="legend">
+    <div class="leg hue-lime"><b><span class="sw"></span>[Segment name]</b><span>[One sentence.]</span></div>
+  </div>
+</div>
+```
+
+### Table (`.tablewrap`)
+Use for: records with several attributes, such as a pipeline, leads or tasks. Put status in an `.st` pill.
+```html
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>[Column]</th><th>[Column]</th><th>Status</th><th>[Column]</th></tr></thead>
+    <tbody>
+      <tr><td><b>[Name]</b><br>[Detail]</td><td>[Text]</td><td><span class="st good">[Status]</span></td><td>[Text]</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+### Status pill (`.st`)
+Use for: a status on any item, in a table or as the last line of a card. The variants are `good`, `wait`, `bad` and `off`.
+```html
+<span class="st wait">[Status]</span>
+```
+
+### Numbered rows (`.numrows`)
+Use for: an ordered list of actions or priorities.
+```html
+<div class="numrows">
+  <div class="numrow"><span class="num">1</span><div><b>[Action]</b><p>[One sentence on why.]</p></div></div>
+</div>
+```
+
+### Lanes (`.lanes`)
+Use for: parallel tracks compared across two points in time or two attributes. The header row shows on desktop and the cell labels show on mobile.
+```html
+<div class="lanes">
+  <div class="lane-head eyebrow"><span>[Lane]</span><span>[Column A]</span><span>[Column B]</span></div>
+  <div class="lane hue-sky">
+    <div class="lane-name"><small>[Label]</small>[Lane name]</div>
+    <div><p class="cell-label">[Column A]</p><p>[Text.]</p></div>
+    <div><p class="cell-label">[Column B]</p><p>[Text.]</p></div>
+  </div>
+</div>
+```
+
+### Options panel (`.options`)
+Use for: a decision point and the choices it offers.
+```html
+<div class="options">
+  <p class="eyebrow">[Label · Date]</p>
+  <h3>[The decision]</h3>
+  <div class="options-grid">
+    <div class="opt"><b>[Option]</b><span>[Condition or consequence.]</span></div>
+  </div>
+  <p class="note"><b>[Lead-in:]</b> [Annotation.]</p>
+</div>
+```
+
+### Dashed panel (`.dashed`)
+Use for: something on the horizon, optional or out of scope, with chips for its themes. `.chip.on` highlights one chip.
+```html
+<div class="dashed">
+  <h3>[Title]</h3>
+  <p>[One or two sentences.]</p>
+  <div class="chips"><span class="chip">[Theme]</span><span class="chip on">[Highlighted theme]</span></div>
+</div>
+```
+
+### Tickets (`.tickets`)
+Use for: notes grouped by subject, two per row. A callout placed inside `.tickets` spans the full width.
+```html
+<div class="tickets">
+  <article class="ticket hue-coral">
+    <h3><span class="dot"></span>[Subject]</h3>
+    <ul><li>[Note.]</li></ul>
+  </article>
+</div>
+```
+
+### Numbered tiles (`.tiles`)
+Use for: a few major items, such as decisions or commitments, each with a tag, a one-line lead and supporting points.
+```html
+<div class="tiles">
+  <article class="tile hue-teal">
+    <div class="num">1</div>
+    <div class="tile-body">
+      <span class="pill">[Tag]</span>
+      <h3>[Title]</h3>
+      <p class="lead">[One-line summary.]</p>
+      <ul><li>[Supporting point.]</li></ul>
+    </div>
+  </article>
+</div>
+```
+
+### Mini cards (`.minis`)
+Use for: a light list of items that each need a one-line reason, such as parked or minor items.
+```html
+<div class="minis">
+  <div class="mini"><b>[Item]</b><span>[One-line reason.]</span></div>
+</div>
+```
+
+### Detail cards (`.details`)
+Use for: richer items that need a description, a secondary note with a bold lead-in, and optionally a 1-to-5 meter and a status pill. Fill one `i.f` per point.
+```html
+<div class="details">
+  <article class="detail">
+    <div class="detail-top"><h4>[Title]</h4><span class="meter" aria-label="[Difficulty 4 of 5]"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><span>[Rating word]</span></span></div>
+    <p>[Description.]</p>
+    <p class="more"><b>[Lead-in:]</b> [Secondary note.]</p>
+    <span class="st wait">[Status]</span>
+  </article>
+</div>
+```
+
+### Trio (`.trio`)
+Use for: exactly three short, parallel points, such as reasons or arguments.
+```html
+<div class="trio">
+  <div><b>[Point]</b><p>[One or two sentences.]</p></div>
+</div>
+```
+
+### Prose panel (`.summary`)
+Use for: running prose, such as a closing summary. The first paragraph gets a drop cap.
+```html
+<div class="summary">
+  <p>[Paragraph.]</p>
+  <p class="foot">[Small mono footnote, such as a date.]</p>
+</div>
+```
