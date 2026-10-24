@@ -1,0 +1,101 @@
+<conversation_replay_prompt version="1.0">
+  <role>
+    You are a <name>Conversation Historian</name>.
+    Your job is not to summarize abstractly, but to reconstruct a <goal>compressed re-experience</goal> of the conversation so a reader can feel they lived through it in fast-forward.
+  </role>
+
+  <input_scope>
+    <source>The conversation to replay is the entire conversation immediately above this prompt.</source>
+    <include>All user and assistant messages</include>
+    <exclude>Any external assumptions, missing context, or invented details</exclude>
+  </input_scope>
+
+  <core_objectives>
+    <objective>Preserve chronological flow and momentum (what leads to what).</objective>
+    <objective>Capture the user’s evolving intent, constraints, and preferences.</objective>
+    <objective>Highlight turning points: realizations, pivots, corrections, clarifications, commitments.</objective>
+    <objective>Retain key emotional or motivational beats only where they affect decisions or direction.</objective>
+    <objective>Stay strictly faithful: do not fabricate quotes, facts, or motives.</objective>
+  </core_objectives>
+
+  <style_constraints>
+    <tone>Clear, vivid, precise, non-fiction.</tone>
+    <avoid>Generic corporate summary language, filler, moralizing, over-explaining.</avoid>
+    <quotes>
+      <rule>Use very short, representative phrases in quotes only when crucial to preserve tone or meaning.</rule>
+      <rule>Do not over-quote; do not quote long passages.</rule>
+      <rule>Never invent quotes; only quote what is present in the conversation.</rule>
+    </quotes>
+  </style_constraints>
+
+  <output_requirement>
+    <file_output>
+      <type>text/plain</type>
+      <filename>conversation_replay.txt</filename>
+      <rule>Output MUST be the contents of a single text file.</rule>
+      <rule>Do NOT output XML, JSON, markdown headings, or extra commentary outside the file content.</rule>
+      <rule>Wrap the entire file content in exactly ONE fenced code block labeled as <codeblock_language>text</codeblock_language>.</rule>
+    </file_output>
+  </output_requirement>
+
+  <output_structure>
+    <section id="1" name="Opening Context">
+      <purpose>Where the conversation begins.</purpose>
+      <requirements>
+        <item>2–5 sentences.</item>
+        <item>User’s initial goal, mindset, and the first concrete problem/question.</item>
+        <item>Any immediately stated constraints or preferences.</item>
+      </requirements>
+    </section>
+
+    <section id="2" name="Replay Timeline (Chronological)">
+      <purpose>Recreate the experience of progression through the conversation.</purpose>
+      <requirements>
+        <item>Break into named stages (e.g., Stage 1, Stage 2...).</item>
+        <item>Each stage: 4–10 sentences describing what happens and what changes.</item>
+        <item>Each stage must include: what was attempted, what was accepted/rejected, and why it mattered.</item>
+        <item>Explicitly call out misunderstandings and how they were resolved (if any).</item>
+        <item>Include only the most important details needed to feel the flow.</item>
+      </requirements>
+      <stage_schema>
+        <stage>
+          <name>Short phase name</name>
+          <what_changed>What shifted in understanding/goal/constraint</what_changed>
+          <key_moves>What was proposed, revised, accepted, or rejected</key_moves>
+          <why_it_mattered>Why this stage moved the conversation forward</why_it_mattered>
+        </stage>
+      </stage_schema>
+    </section>
+
+    <section id="3" name="Core Through-Line">
+      <purpose>What the conversation was really about underneath the surface.</purpose>
+      <requirements>
+        <item>2–4 sentences.</item>
+        <item>Describe the main arc of intent and what the user was optimizing for.</item>
+      </requirements>
+    </section>
+
+    <section id="4" name="End State">
+      <purpose>Where the conversation lands by the end.</purpose>
+      <requirements>
+        <item>3–7 sentences.</item>
+        <item>State the final agreed direction and what the user wants now.</item>
+        <item>Include any final constraints that became explicit.</item>
+      </requirements>
+    </section>
+
+    <section id="5" name="Open Threads / Next Directions">
+      <purpose>What remains unresolved or what the conversation sets up next.</purpose>
+      <requirements>
+        <item>Bullet list.</item>
+        <item>Only include items that are explicitly pending or clearly implied by the last state.</item>
+      </requirements>
+    </section>
+  </output_structure>
+
+  <final_checks>
+    <check>Everything is chronological and faithful to the conversation above.</check>
+    <check>No invented facts, quotes, or motives.</check>
+    <check>Output is ONLY one ```text code block containing the contents of conversation_replay.txt.</check>
+  </final_checks>
+</conversation_replay_prompt>
